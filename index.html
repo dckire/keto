@@ -4,27 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- Configuración para Redes Sociales (Open Graph para GitHub Pages) -->
+    <!-- Configuración para Redes Sociales -->
     <title>Keto Journey Visualizer | 250 Keto Friendly Delights</title>
     <meta name="description" content="Descubre cómo perder peso con 250 recetas Keto deliciosas. ¡Prueba nuestro generador de recetas con IA!">
     
-    <!-- Etiquetas de Redes Sociales con Imagen Corregida -->
-    <meta property="og:title" content="Transformación Keto: 250 Delicias Saludables">
-    <meta property="og:description" content="¿Cansado de dietas aburridas? Explora nuestro recetario interactivo y obtén un 50% de descuento hoy.">
-    <!-- IMPORTANTE: Reemplaza 'USUARIO' y 'REPOSITORIO' con tus datos reales de GitHub para la URL del sitio -->
-    <meta property="og:url" content="https://USUARIO.github.io/REPOSITORIO/">
-    
-    <!-- Imagen de respaldo optimizada (URL directa y compatible) -->
-    <meta property="og:image" content="https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=1200&h=630&q=80"> 
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:type" content="website">
-    
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Transformación Keto: 250 Delicias Saludables">
-    <meta name="twitter:description" content="Explora nuestro recetario interactivo y obtén un 50% de descuento hoy.">
-    <meta name="twitter:image" content="https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=1200&h=630&q=80">
-
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -42,10 +25,8 @@
             position: relative;
             width: 100%;
             max-width: 500px;
-            margin-left: auto;
-            margin-right: auto;
+            margin: 0 auto;
             height: 300px;
-            max-height: 350px;
         }
 
         .ai-gradient {
@@ -76,22 +57,37 @@
         .faq-item.active .fa-chevron-down {
             transform: rotate(180deg);
         }
+
+        .pulse-urgent {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
     </style>
 </head>
 <body class="antialiased">
 
+    <!-- Banner de Urgencia -->
+    <div class="bg-red-600 text-white text-center py-2 text-sm font-bold sticky top-0 z-[60]">
+        <i class="fas fa-clock mr-2"></i> ¡OFERTA TERMINA EN: <span id="countdown">15:00</span>! 50% DE DESCUENTO DISPONIBLE
+    </div>
+
     <!-- Navegación -->
-    <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-100">
+    <nav class="sticky top-[36px] z-50 bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-100">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
                 <div class="flex items-center">
                     <span class="text-emerald-600 font-bold text-xl"><i class="fas fa-leaf mr-2"></i>Keto Delights</span>
                 </div>
                 <div class="hidden md:flex space-x-6 items-center">
-                    <button onclick="scrollToSection('philosophy')" class="text-gray-500 hover:text-emerald-600 font-medium transition-colors">Método</button>
-                    <button onclick="scrollToSection('explorer')" class="text-gray-500 hover:text-emerald-600 font-medium transition-colors">Recetas</button>
-                    <button onclick="scrollToSection('ai-generator')" class="text-blue-600 font-bold flex items-center">✨ AI Chef</button>
-                    <button onclick="scrollToSection('faq')" class="text-gray-500 hover:text-emerald-600 font-medium transition-colors">FAQ</button>
+                    <button onclick="scrollToSection('bmi-calc')" class="text-gray-500 hover:text-emerald-600 font-medium transition-colors text-sm">Diagnóstico</button>
+                    <button onclick="scrollToSection('philosophy')" class="text-gray-500 hover:text-emerald-600 font-medium transition-colors text-sm">Método</button>
+                    <button onclick="scrollToSection('ai-generator')" class="text-blue-600 font-bold flex items-center text-sm">✨ AI Chef</button>
+                    <button onclick="scrollToSection('faq')" class="text-gray-500 hover:text-emerald-600 font-medium transition-colors text-sm">FAQ</button>
                     <button onclick="window.open('https://go.hotmart.com/O104035291V', '_blank')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-semibold text-sm transition-all shadow-md active:scale-95">
                         Obtener Libro
                     </button>
@@ -118,11 +114,38 @@
                     <button id="tts-btn" onclick="playVoiceIntro()" class="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 px-6 py-3 rounded-full text-sm font-semibold transition-all shadow-sm">
                         <i class="fas fa-volume-up text-emerald-600"></i> Escuchar Introducción ✨
                     </button>
-                    <button onclick="scrollToSection('ai-generator')" class="flex items-center gap-2 bg-emerald-50 hover:bg-emerald-100 px-6 py-3 rounded-full text-sm font-semibold text-emerald-700 transition-all shadow-sm border border-emerald-100">
-                        <i class="fas fa-magic"></i> Probar AI Chef
+                    <button onclick="scrollToSection('bmi-calc')" class="flex items-center gap-2 bg-emerald-600 text-white px-6 py-3 rounded-full text-sm font-semibold transition-all shadow-lg hover:bg-emerald-700">
+                        <i class="fas fa-calculator"></i> Calcular mi Estado Actual
                     </button>
                 </div>
                 <div id="tts-status" class="text-xs text-gray-400 hidden italic">Procesando con IA...</div>
+            </div>
+        </section>
+
+        <!-- Sección: Calculadora de IMC -->
+        <section id="bmi-calc" class="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-10">
+                    <h2 class="text-2xl font-bold text-gray-800 italic">¿Cuál es tu punto de partida?</h2>
+                    <p class="text-gray-500">Calcula tu Índice de Masa Corporal para recibir una recomendación personalizada.</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-xs font-bold text-gray-500 uppercase">Peso (kg)</label>
+                            <input type="number" id="bmi-weight" placeholder="Ej: 80" class="w-full p-4 bg-gray-50 rounded-xl border border-gray-200 focus:border-emerald-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="text-xs font-bold text-gray-500 uppercase">Altura (cm)</label>
+                            <input type="number" id="bmi-height" placeholder="Ej: 175" class="w-full p-4 bg-gray-50 rounded-xl border border-gray-200 focus:border-emerald-500 focus:outline-none">
+                        </div>
+                        <button onclick="calculateBMI()" class="w-full bg-emerald-600 text-white font-bold py-4 rounded-xl hover:bg-emerald-700 transition-all">Calcular Diagnóstico</button>
+                    </div>
+                    <div id="bmi-result" class="bg-gray-50 rounded-2xl p-6 border border-dashed border-gray-300 flex flex-col items-center justify-center text-center min-h-[200px]">
+                        <i class="fas fa-chart-line text-4xl text-gray-300 mb-4"></i>
+                        <p class="text-gray-400 italic text-sm">Ingresa tus datos para ver el análisis</p>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -213,7 +236,7 @@
             </div>
         </section>
 
-        <!-- Sección 5: Testimonios (Prueba Social) -->
+        <!-- Sección 5: Testimonios -->
         <section id="testimonials" class="py-8">
             <h2 class="text-center text-3xl font-bold mb-10 text-gray-800 italic">Historias de Éxito</h2>
             <div class="grid md:grid-cols-3 gap-6">
@@ -273,7 +296,7 @@
 
     <footer class="bg-white border-t border-gray-100 py-16 text-center space-y-6">
         <h3 class="text-2xl font-bold text-gray-800">¿Listo para transformar tu salud?</h3>
-        <button onclick="window.open('https://go.hotmart.com/O104035291V', '_blank')" class="bg-emerald-600 text-white px-12 py-5 rounded-full font-bold text-xl shadow-xl hover:scale-105 active:scale-95 transition-all">
+        <button onclick="window.open('https://go.hotmart.com/O104035291V', '_blank')" class="bg-emerald-600 text-white px-12 py-5 rounded-full font-bold text-xl shadow-xl hover:scale-105 active:scale-95 transition-all pulse-urgent">
             ¡Quiero mis 250 Recetas Keto Ahora!
         </button>
         <div class="flex justify-center gap-6 text-gray-400 text-sm pt-4">
@@ -302,7 +325,7 @@
                 await new Promise(r => setTimeout(r, delay));
                 delay *= 2;
             }
-            throw new Error('Error en la conexión con el servidor de IA.');
+            throw new Error('Error en la conexión.');
         }
 
         async function playVoiceIntro() {
@@ -345,7 +368,7 @@
                 const result = await fetchGemini(url, { contents: [{ parts: [{ text: prompt }] }] });
                 loader.classList.add('hidden');
                 content.innerText = result.candidates[0].content.parts[0].text;
-            } catch (e) { content.innerText = "Hubo un problema. Por favor intenta de nuevo."; }
+            } catch (e) { content.innerText = "Error al generar receta."; }
             finally { btn.disabled = false; }
         }
 
@@ -372,9 +395,39 @@
             new Audio(URL.createObjectURL(blob)).play();
         }
 
-        function toggleFaq(el) {
-            el.classList.toggle('active');
+        function toggleFaq(el) { el.classList.toggle('active'); }
+
+        // --- Lógica de IMC ---
+        function calculateBMI() {
+            const w = document.getElementById('bmi-weight').value;
+            const h = document.getElementById('bmi-height').value;
+            const resBox = document.getElementById('bmi-result');
+            if(!w || !h) return;
+            const bmi = (w / ((h/100)**2)).toFixed(1);
+            let cat = "";
+            let color = "";
+            if(bmi < 18.5) { cat = "Bajo peso"; color = "text-blue-500"; }
+            else if(bmi < 25) { cat = "Peso saludable"; color = "text-emerald-500"; }
+            else if(bmi < 30) { cat = "Sobrepeso"; color = "text-orange-500"; }
+            else { cat = "Obesidad"; color = "text-red-500"; }
+
+            resBox.innerHTML = `
+                <div class="space-y-2">
+                    <span class="text-4xl font-bold ${color}">${bmi}</span>
+                    <p class="font-bold text-gray-800">${cat}</p>
+                    <p class="text-xs text-gray-500 px-4 mt-2">Nuestras recetas Keto son ideales para ayudarte a alcanzar tu rango ideal de forma deliciosa.</p>
+                </div>
+            `;
         }
+
+        // --- Contador de Oferta ---
+        let timer = 15 * 60;
+        setInterval(() => {
+            const mins = Math.floor(timer / 60);
+            const secs = timer % 60;
+            document.getElementById('countdown').innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+            if(timer > 0) timer--;
+        }, 1000);
 
         // --- Gráficos e Interfaz ---
         const staticRecipes = [
@@ -393,7 +446,7 @@
             const grid = document.getElementById('recipeGrid');
             staticRecipes.forEach(r => {
                 const div = document.createElement('div');
-                div.className = 'bg-gray-50 p-6 rounded-2xl flex items-center gap-4 hover:shadow-md transition-all cursor-default border border-transparent hover:border-emerald-100';
+                div.className = 'bg-gray-50 p-6 rounded-2xl flex items-center gap-4 hover:shadow-md transition-all border border-transparent hover:border-emerald-100';
                 div.innerHTML = `<div class="p-4 rounded-full ${r.color}"><i class="fas ${r.icon}"></i></div><h3 class="font-bold text-gray-800">${r.title}</h3>`;
                 grid.appendChild(div);
             });
