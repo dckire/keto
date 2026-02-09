@@ -35,6 +35,7 @@
             font-family: 'Poppins', sans-serif;
             background-color: #FAFAF9;
             color: #1F2937;
+            scroll-behavior: smooth;
         }
 
         .chart-container {
@@ -61,22 +62,37 @@
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
         }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 200px;
+        }
+
+        .faq-item.active .fa-chevron-down {
+            transform: rotate(180deg);
+        }
     </style>
 </head>
 <body class="antialiased">
 
     <!-- Navegación -->
-    <nav class="sticky top-0 z-50 bg-white shadow-sm border-b border-gray-100">
+    <nav class="sticky top-0 z-50 bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-100">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16 items-center">
                 <div class="flex items-center">
                     <span class="text-emerald-600 font-bold text-xl"><i class="fas fa-leaf mr-2"></i>Keto Delights</span>
                 </div>
                 <div class="hidden md:flex space-x-6 items-center">
-                    <button onclick="scrollToSection('philosophy')" class="text-gray-500 hover:text-emerald-600 font-medium">Método</button>
-                    <button onclick="scrollToSection('explorer')" class="text-gray-500 hover:text-emerald-600 font-medium">Recetas</button>
+                    <button onclick="scrollToSection('philosophy')" class="text-gray-500 hover:text-emerald-600 font-medium transition-colors">Método</button>
+                    <button onclick="scrollToSection('explorer')" class="text-gray-500 hover:text-emerald-600 font-medium transition-colors">Recetas</button>
                     <button onclick="scrollToSection('ai-generator')" class="text-blue-600 font-bold flex items-center">✨ AI Chef</button>
-                    <button onclick="window.open('https://go.hotmart.com/O104035291V', '_blank')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-semibold text-sm transition-colors">
+                    <button onclick="scrollToSection('faq')" class="text-gray-500 hover:text-emerald-600 font-medium transition-colors">FAQ</button>
+                    <button onclick="window.open('https://go.hotmart.com/O104035291V', '_blank')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-semibold text-sm transition-all shadow-md active:scale-95">
                         Obtener Libro
                     </button>
                 </div>
@@ -85,10 +101,10 @@
     </nav>
 
     <!-- Contenido Principal -->
-    <main class="max-w-6xl mx-auto px-4 py-8 space-y-12">
+    <main class="max-w-6xl mx-auto px-4 py-8 space-y-16">
 
         <!-- Sección Hero -->
-        <section class="text-center space-y-6 py-10 bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
+        <section class="text-center space-y-6 py-12 bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
             <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">Digitalab Learning Presenta</span>
             <h1 class="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
                 Visualizador de <span class="text-emerald-600">Transformación Keto</span>
@@ -96,11 +112,14 @@
             
             <div class="flex flex-col items-center gap-4">
                 <p class="text-lg text-gray-600 max-w-2xl mx-auto">
-                    Explora la ciencia detrás de las recetas del libro "250 Keto Friendly Delights".
+                    Explora la ciencia detrás de las recetas del libro <span class="font-semibold text-gray-800">"250 Keto Friendly Delights"</span> y empieza tu cambio hoy.
                 </p>
                 <div class="flex flex-wrap justify-center gap-4">
-                    <button id="tts-btn" onclick="playVoiceIntro()" class="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-full text-sm font-semibold transition-all">
+                    <button id="tts-btn" onclick="playVoiceIntro()" class="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 px-6 py-3 rounded-full text-sm font-semibold transition-all shadow-sm">
                         <i class="fas fa-volume-up text-emerald-600"></i> Escuchar Introducción ✨
+                    </button>
+                    <button onclick="scrollToSection('ai-generator')" class="flex items-center gap-2 bg-emerald-50 hover:bg-emerald-100 px-6 py-3 rounded-full text-sm font-semibold text-emerald-700 transition-all shadow-sm border border-emerald-100">
+                        <i class="fas fa-magic"></i> Probar AI Chef
                     </button>
                 </div>
                 <div id="tts-status" class="text-xs text-gray-400 hidden italic">Procesando con IA...</div>
@@ -110,64 +129,141 @@
         <!-- Sección 1: Filosofía y Macros -->
         <section id="philosophy" class="grid md:grid-cols-2 gap-8 items-center bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
             <div class="space-y-6">
-                <h2 class="text-2xl font-bold text-gray-800">La Ciencia de los Macronutrientes</h2>
+                <h2 class="text-2xl font-bold text-gray-800 border-l-4 border-emerald-500 pl-4">La Ciencia de los Macronutrientes</h2>
                 <div class="chart-container">
                     <canvas id="macrosChart"></canvas>
                 </div>
             </div>
-            <div class="bg-gray-50 rounded-xl p-8">
-                <h3 class="font-bold mb-4">✨ Optimización Inteligente</h3>
-                <p class="text-sm text-gray-600 mb-4">Nuestro algoritmo garantiza que estas 250 recetas mantengan tu cuerpo en cetosis constante.</p>
-                <ul class="space-y-2 text-sm text-gray-700">
-                    <li><i class="fas fa-check text-emerald-500 mr-2"></i> 70% Grasas Saludables</li>
-                    <li><i class="fas fa-check text-emerald-500 mr-2"></i> 25% Proteína de Alta Calidad</li>
-                    <li><i class="fas fa-check text-emerald-500 mr-2"></i> 5% Carbohidratos Netos</li>
+            <div class="bg-gray-50 rounded-2xl p-8">
+                <h3 class="font-bold mb-4 text-emerald-800 flex items-center gap-2">
+                    <i class="fas fa-microscope"></i> Optimización Inteligente
+                </h3>
+                <p class="text-sm text-gray-600 mb-6 leading-relaxed">Nuestro algoritmo garantiza que estas 250 recetas mantengan tu cuerpo en cetosis constante, maximizando la quema de grasa sin pasar hambre.</p>
+                <ul class="space-y-4 text-sm text-gray-700">
+                    <li class="flex items-center gap-3"><span class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-xs font-bold">70%</span> Grasas Saludables</li>
+                    <li class="flex items-center gap-3"><span class="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center text-xs font-bold">25%</span> Proteína de Alta Calidad</li>
+                    <li class="flex items-center gap-3"><span class="w-8 h-8 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-xs font-bold">5%</span> Carbohidratos Netos</li>
                 </ul>
             </div>
         </section>
 
         <!-- Sección 2: Generador de Recetas IA -->
-        <section id="ai-generator" class="ai-gradient rounded-3xl p-8 text-white shadow-xl">
-            <div class="max-w-4xl mx-auto text-center space-y-6">
-                <h2 class="text-3xl font-bold italic">✨ Chef IA Personalizado</h2>
-                <p class="text-emerald-50 text-lg">Dime qué tienes en tu refrigerador y crearé una receta Keto para ti.</p>
+        <section id="ai-generator" class="ai-gradient rounded-3xl p-10 text-white shadow-xl relative overflow-hidden">
+            <div class="absolute top-0 right-0 p-8 opacity-10">
+                <i class="fas fa-robot text-9xl"></i>
+            </div>
+            <div class="max-w-4xl mx-auto text-center space-y-6 relative z-10">
+                <h2 class="text-3xl font-bold">✨ Chef IA Personalizado</h2>
+                <p class="text-emerald-50 text-lg">Escribe los ingredientes que tienes y nuestra IA creará una receta exclusiva compatible con el libro.</p>
                 <div class="flex flex-col md:flex-row gap-4">
-                    <input type="text" id="ingredients-input" placeholder="Ej: Huevo, aguacate, queso..." class="flex-grow p-4 rounded-xl text-gray-800 focus:outline-none shadow-inner">
-                    <button onclick="generateRecipe()" id="gen-btn" class="bg-white text-emerald-600 font-bold px-8 py-4 rounded-xl hover:bg-emerald-50 transition-all shadow-lg flex items-center justify-center gap-2">
-                        Cocinar con IA ✨
+                    <input type="text" id="ingredients-input" placeholder="Ej: Pollo, calabacín, crema..." class="flex-grow p-4 rounded-xl text-gray-800 focus:outline-none shadow-lg text-lg">
+                    <button onclick="generateRecipe()" id="gen-btn" class="bg-white text-emerald-600 font-bold px-8 py-4 rounded-xl hover:bg-emerald-50 transition-all shadow-lg flex items-center justify-center gap-2 text-lg active:scale-95">
+                        Generar Receta ✨
                     </button>
                 </div>
-                <div id="ai-response-container" class="hidden mt-8 bg-white/10 backdrop-blur-md rounded-2xl p-6 text-left border border-white/20">
+                <div id="ai-response-container" class="hidden mt-8 bg-white/10 backdrop-blur-md rounded-2xl p-8 text-left border border-white/20 shadow-2xl">
                     <div id="ai-loader" class="hidden space-y-4">
                         <div class="h-6 loading-shimmer rounded w-3/4"></div>
                         <div class="h-4 loading-shimmer rounded w-full"></div>
+                        <div class="h-4 loading-shimmer rounded w-5/6"></div>
                     </div>
-                    <div id="ai-content" class="prose prose-invert max-w-none text-emerald-50 whitespace-pre-line"></div>
+                    <div id="ai-content" class="prose prose-invert max-w-none text-emerald-50 whitespace-pre-line leading-relaxed italic"></div>
                 </div>
             </div>
         </section>
 
         <!-- Sección 3: Explorador de Recetas -->
         <section id="explorer" class="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
-            <h2 class="text-2xl font-bold mb-6">Muestra del Recetario (250 Recetas)</h2>
+            <div class="flex justify-between items-end mb-8">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800">Recetas Destacadas</h2>
+                    <p class="text-gray-500 text-sm">Una muestra de lo que encontrarás en las 250 delicias.</p>
+                </div>
+                <button onclick="window.open('https://go.hotmart.com/O104035291V', '_blank')" class="text-emerald-600 font-bold text-sm hover:underline">Ver todas las recetas <i class="fas fa-arrow-right ml-1"></i></button>
+            </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="recipeGrid"></div>
         </section>
 
         <!-- Sección 4: Proyección de Resultados -->
-        <section id="projection" class="bg-gray-900 rounded-3xl p-8 text-white">
-            <div class="grid lg:grid-cols-3 gap-8 items-center">
-                <div class="space-y-4">
-                    <h2 class="text-2xl font-bold">Simulador de Metas</h2>
-                    <p class="text-gray-400 text-sm">Ajusta tu peso actual para ver tu transformación en 30 días con nuestro método.</p>
-                    <input type="range" id="startWeight" min="50" max="150" value="85" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-emerald-500">
-                    <div class="flex justify-between text-lg font-bold">
-                        <span id="weightVal">85kg</span>
-                        <span class="text-emerald-400" id="projectedLoss">-6.8 kg</span>
+        <section id="projection" class="bg-gray-900 rounded-3xl p-8 text-white shadow-2xl">
+            <div class="grid lg:grid-cols-3 gap-12 items-center">
+                <div class="space-y-6">
+                    <h2 class="text-2xl font-bold text-emerald-400">Simulador de Metas</h2>
+                    <p class="text-gray-400 text-sm leading-relaxed">Ajusta tu peso actual para visualizar el impacto estimado de seguir nuestro recetario durante el primer mes.</p>
+                    <div class="space-y-2">
+                        <label class="text-xs text-gray-500 uppercase font-bold tracking-widest">Peso Actual</label>
+                        <input type="range" id="startWeight" min="50" max="150" value="85" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-emerald-500">
+                    </div>
+                    <div class="flex justify-between items-center bg-gray-800/50 p-4 rounded-xl border border-gray-700">
+                        <div>
+                            <span class="text-xs text-gray-400 block uppercase">Inicial</span>
+                            <span class="text-2xl font-bold" id="weightVal">85kg</span>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-xs text-gray-400 block uppercase">Objetivo 30d</span>
+                            <span class="text-2xl font-bold text-emerald-400" id="projectedLoss">-6.8 kg</span>
+                        </div>
                     </div>
                 </div>
-                <div class="lg:col-span-2 bg-white rounded-xl p-4">
-                    <div class="h-[250px]">
+                <div class="lg:col-span-2 bg-white rounded-2xl p-6 shadow-inner">
+                    <div class="h-[280px]">
                         <canvas id="projectionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección 5: Testimonios (Prueba Social) -->
+        <section id="testimonials" class="py-8">
+            <h2 class="text-center text-3xl font-bold mb-10 text-gray-800 italic">Historias de Éxito</h2>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col gap-4 italic">
+                    <div class="text-yellow-400 text-xs"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                    <p class="text-gray-600 text-sm">"Nunca pensé que podría comer pizza y seguir perdiendo peso. La receta de masa de coliflor es increíble."</p>
+                    <div class="font-bold text-gray-800 text-xs">— María R. (-12kg)</div>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col gap-4 italic">
+                    <div class="text-yellow-400 text-xs"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                    <p class="text-gray-600 text-sm">"El generador de IA me ayuda los días que no sé qué cocinar con lo que tengo en la nevera. ¡Un 10!"</p>
+                    <div class="font-bold text-gray-800 text-xs">— Juan P. (-8kg)</div>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col gap-4 italic">
+                    <div class="text-yellow-400 text-xs"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                    <p class="text-gray-600 text-sm">"Tengo más energía que nunca. Las recetas son fáciles de seguir y no requieren ingredientes raros."</p>
+                    <div class="font-bold text-gray-800 text-xs">— Carla M. (-15kg)</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección 6: FAQ -->
+        <section id="faq" class="bg-emerald-50 rounded-3xl p-8 border border-emerald-100">
+            <h2 class="text-2xl font-bold mb-8 text-center text-emerald-900 italic">Preguntas Frecuentes</h2>
+            <div class="max-w-3xl mx-auto space-y-4">
+                <div class="faq-item bg-white rounded-xl border border-emerald-100 cursor-pointer" onclick="toggleFaq(this)">
+                    <div class="p-4 flex justify-between items-center font-semibold text-emerald-800">
+                        ¿Es apto para principiantes?
+                        <i class="fas fa-chevron-down transition-transform"></i>
+                    </div>
+                    <div class="faq-answer px-4 pb-4 text-sm text-gray-600 leading-relaxed">
+                        Totalmente. El libro incluye una guía básica para entender la cetosis y recetas que se explican paso a paso de forma muy sencilla.
+                    </div>
+                </div>
+                <div class="faq-item bg-white rounded-xl border border-emerald-100 cursor-pointer" onclick="toggleFaq(this)">
+                    <div class="p-4 flex justify-between items-center font-semibold text-emerald-800">
+                        ¿Recibiré el libro físico?
+                        <i class="fas fa-chevron-down transition-transform"></i>
+                    </div>
+                    <div class="faq-answer px-4 pb-4 text-sm text-gray-600 leading-relaxed">
+                        Es un producto digital de acceso inmediato (eBook). Podrás leerlo en tu móvil, tablet o PC apenas realices la compra.
+                    </div>
+                </div>
+                <div class="faq-item bg-white rounded-xl border border-emerald-100 cursor-pointer" onclick="toggleFaq(this)">
+                    <div class="p-4 flex justify-between items-center font-semibold text-emerald-800">
+                        ¿Tengo garantía de devolución?
+                        <i class="fas fa-chevron-down transition-transform"></i>
+                    </div>
+                    <div class="faq-answer px-4 pb-4 text-sm text-gray-600 leading-relaxed">
+                        Sí, cuentas con 7 días de garantía incondicional a través de Hotmart. Si no es lo que esperabas, solicitas el reembolso total.
                     </div>
                 </div>
             </div>
@@ -175,11 +271,17 @@
 
     </main>
 
-    <footer class="bg-white border-t border-gray-100 py-12 text-center">
-        <button onclick="window.open('https://go.hotmart.com/O104035291V', '_blank')" class="bg-emerald-600 text-white px-10 py-4 rounded-full font-bold text-xl shadow-xl hover:scale-105 transition-all">
-            Obtener Todas las Recetas (50% DTO)
+    <footer class="bg-white border-t border-gray-100 py-16 text-center space-y-6">
+        <h3 class="text-2xl font-bold text-gray-800">¿Listo para transformar tu salud?</h3>
+        <button onclick="window.open('https://go.hotmart.com/O104035291V', '_blank')" class="bg-emerald-600 text-white px-12 py-5 rounded-full font-bold text-xl shadow-xl hover:scale-105 active:scale-95 transition-all">
+            ¡Quiero mis 250 Recetas Keto Ahora!
         </button>
-        <p class="mt-8 text-gray-400 text-xs">Digitalab Learning &copy; 2026 - Potenciado por Gemini AI</p>
+        <div class="flex justify-center gap-6 text-gray-400 text-sm pt-4">
+            <span><i class="fas fa-shield-alt"></i> Pago Seguro</span>
+            <span><i class="fas fa-history"></i> Acceso Vitalicio</span>
+            <span><i class="fas fa-certificate"></i> Garantía 7 Días</span>
+        </div>
+        <p class="mt-8 text-gray-400 text-xs px-4">Digitalab Learning &copy; 2026 - Este sitio utiliza inteligencia artificial para fines de simulación educativa.</p>
     </footer>
 
     <script>
@@ -210,7 +312,7 @@
                 btn.disabled = true;
                 status.classList.remove('hidden');
                 status.innerText = "Sintetizando voz...";
-                const text = "Say excitedly: ¡Bienvenido a tu nueva vida! Con el libro 250 Keto Friendly Delights, descubrirás que perder peso puede ser delicioso. Nuestra IA te guiará paso a paso hacia el cuerpo que deseas. ¡Vamos allá!";
+                const text = "Say excitedly: ¡Hola! Soy tu asistente virtual. Con 250 Keto Friendly Delights, vas a descubrir un mundo de sabores sin sacrificar tus resultados. Empieza hoy mismo y sorpréndete con lo fácil que es transformar tu cuerpo.";
                 const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
                 const payload = {
                     contents: [{ parts: [{ text }] }],
@@ -238,12 +340,12 @@
                 container.classList.remove('hidden');
                 loader.classList.remove('hidden');
                 content.innerText = '';
-                const prompt = `Actúa como un Chef Keto. Crea una receta con estos ingredientes: ${input.value}. Incluye nombre, macros y pasos. En español.`;
+                const prompt = `Actúa como un Chef Keto profesional. Crea una receta creativa usando: ${input.value}. Debe seguir el estilo del libro 250 Keto Delights. Incluye nombre, macros (aproximados) y pasos numerados cortos. En español.`;
                 const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
                 const result = await fetchGemini(url, { contents: [{ parts: [{ text: prompt }] }] });
                 loader.classList.add('hidden');
                 content.innerText = result.candidates[0].content.parts[0].text;
-            } catch (e) { content.innerText = "No pude generar la receta ahora."; }
+            } catch (e) { content.innerText = "Hubo un problema. Por favor intenta de nuevo."; }
             finally { btn.disabled = false; }
         }
 
@@ -270,25 +372,29 @@
             new Audio(URL.createObjectURL(blob)).play();
         }
 
+        function toggleFaq(el) {
+            el.classList.toggle('active');
+        }
+
         // --- Gráficos e Interfaz ---
         const staticRecipes = [
-            { title: "Salmón con Espárragos", icon: "fa-fish", color: "bg-blue-100 text-blue-600" },
-            { title: "Omelette de Queso", icon: "fa-egg", color: "bg-yellow-100 text-yellow-600" },
-            { title: "Aguacates Rellenos", icon: "fa-seedling", color: "bg-emerald-100 text-emerald-600" }
+            { title: "Salmón al Limón", icon: "fa-fish", color: "bg-blue-100 text-blue-600" },
+            { title: "Pan Keto de Almendras", icon: "fa-bread-slice", color: "bg-yellow-100 text-yellow-600" },
+            { title: "Pasta de Calabacín", icon: "fa-seedling", color: "bg-emerald-100 text-emerald-600" }
         ];
 
         document.addEventListener('DOMContentLoaded', () => {
             const ctxM = document.getElementById('macrosChart').getContext('2d');
-            new Chart(ctxM, { type: 'doughnut', data: { labels: ['Grasas', 'Proteína', 'Carbs'], datasets: [{ data: [70, 25, 5], backgroundColor: ['#10B981', '#F59E0B', '#EF4444'] }] }, options: { maintainAspectRatio: false } });
+            new Chart(ctxM, { type: 'doughnut', data: { labels: ['Grasas', 'Proteína', 'Carbs'], datasets: [{ data: [70, 25, 5], backgroundColor: ['#10B981', '#F59E0B', '#EF4444'] }] }, options: { maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } } });
 
             const ctxP = document.getElementById('projectionChart').getContext('2d');
-            window.pChart = new Chart(ctxP, { type: 'line', data: { labels: ['Inic', 'S1', 'S2', 'S3', 'S4'], datasets: [{ label: 'Peso Estimado (kg)', data: [85, 83, 81.5, 80, 78.2], borderColor: '#10B981', tension: 0.4, fill: true, backgroundColor: 'rgba(16, 185, 129, 0.1)' }] }, options: { maintainAspectRatio: false } });
+            window.pChart = new Chart(ctxP, { type: 'line', data: { labels: ['Hoy', 'Sem 1', 'Sem 2', 'Sem 3', 'Mes 1'], datasets: [{ label: 'Peso Proyectado (kg)', data: [85, 83.3, 81.6, 79.9, 78.2], borderColor: '#10B981', tension: 0.4, fill: true, backgroundColor: 'rgba(16, 185, 129, 0.05)', pointBackgroundColor: '#10B981' }] }, options: { maintainAspectRatio: false, scales: { y: { beginAtZero: false } } } });
 
             const grid = document.getElementById('recipeGrid');
             staticRecipes.forEach(r => {
                 const div = document.createElement('div');
-                div.className = 'bg-gray-50 p-6 rounded-2xl flex items-center gap-4 hover:shadow-md transition-shadow';
-                div.innerHTML = `<div class="p-4 rounded-full ${r.color}"><i class="fas ${r.icon}"></i></div><h3 class="font-bold">${r.title}</h3>`;
+                div.className = 'bg-gray-50 p-6 rounded-2xl flex items-center gap-4 hover:shadow-md transition-all cursor-default border border-transparent hover:border-emerald-100';
+                div.innerHTML = `<div class="p-4 rounded-full ${r.color}"><i class="fas ${r.icon}"></i></div><h3 class="font-bold text-gray-800">${r.title}</h3>`;
                 grid.appendChild(div);
             });
 
