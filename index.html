@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Configuración para Redes Sociales (Open Graph para GitHub Pages) -->
+    <title>Keto Journey Visualizer | 250 Keto Friendly Delights</title>
+    <meta name="description" content="Descubre cómo perder peso con 250 recetas Keto deliciosas. ¡Prueba nuestro generador de recetas con IA!">
+    
+    <!-- Etiquetas de Redes Sociales con Imagen Lista -->
+    <meta property="og:title" content="Transformación Keto: 250 Delicias Saludables">
+    <meta property="og:description" content="¿Cansado de dietas aburridas? Explora nuestro recetario interactivo y obtén un 50% de descuento hoy.">
+    <!-- IMPORTANTE: Reemplaza 'USUARIO' y 'REPOSITORIO' con tus datos reales de GitHub para la URL del sitio -->
+    <meta property="og:url" content="https://USUARIO.github.io/REPOSITORIO/">
+    
+    <!-- Imagen lista (URL absoluta de alta calidad) para previsualización inmediata -->
+    <meta property="og:image" content="https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=1200&h=630&fit=crop"> 
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://images.unsplash.com/photo-1547592166-23ac45744acd?q=80&w=1200&h=630&fit=crop">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #FAFAF9;
+            color: #1F2937;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 350px;
+        }
+
+        .ai-gradient {
+            background: linear-gradient(135deg, #10B981 0%, #3B82F6 100%);
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        .loading-shimmer {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Navegación -->
+    <nav class="sticky top-0 z-50 bg-white shadow-sm border-b border-gray-100">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center">
+                    <span class="text-emerald-600 font-bold text-xl"><i class="fas fa-leaf mr-2"></i>Keto Delights</span>
+                </div>
+                <div class="hidden md:flex space-x-6 items-center">
+                    <button onclick="scrollToSection('philosophy')" class="text-gray-500 hover:text-emerald-600 font-medium">Método</button>
+                    <button onclick="scrollToSection('explorer')" class="text-gray-500 hover:text-emerald-600 font-medium">Recetas</button>
+                    <button onclick="scrollToSection('ai-generator')" class="text-blue-600 font-bold flex items-center">✨ AI Chef</button>
+                    <button onclick="window.open('https://go.hotmart.com/O104035291V', '_blank')" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-semibold text-sm transition-colors">
+                        Obtener Libro
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <main class="max-w-6xl mx-auto px-4 py-8 space-y-12">
+
+        <!-- Sección Hero con IA -->
+        <section class="text-center space-y-6 py-10 bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
+            <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">Digitalab Learning Presenta</span>
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
+                Visualizador de <span class="text-emerald-600">Transformación Keto</span>
+            </h1>
+            
+            <div class="flex flex-col items-center gap-4">
+                <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                    Explora la ciencia detrás de las recetas del libro "250 Keto Friendly Delights".
+                </p>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <button id="tts-btn" onclick="playVoiceIntro()" class="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-full text-sm font-semibold transition-all">
+                        <i class="fas fa-volume-up text-emerald-600"></i> Escuchar Introducción ✨
+                    </button>
+                    <button onclick="generateAdImage()" class="flex items-center gap-2 bg-blue-50 hover:bg-blue-100 px-4 py-2 rounded-full text-sm font-semibold text-blue-600 transition-all">
+                        <i class="fas fa-image"></i> Generar Banner Personalizado ✨
+                    </button>
+                </div>
+                <div id="tts-status" class="text-xs text-gray-400 hidden italic">Procesando con IA...</div>
+            </div>
+            
+            <!-- Contenedor para la imagen generada por IA -->
+            <div id="ad-image-container" class="hidden mt-6 max-w-xl mx-auto border-4 border-dashed border-gray-200 rounded-2xl p-2 bg-gray-50">
+                <div id="image-loader" class="hidden h-64 loading-shimmer rounded-xl flex items-center justify-center text-gray-400">Diseñando banner publicitario...</div>
+                <img id="generated-ad" src="" alt="[Banner Publicitario Keto]" class="hidden w-full rounded-xl shadow-lg">
+                <div id="download-hint" class="hidden mt-4 p-3 bg-white rounded-lg text-xs text-gray-500 border border-gray-100 text-center">
+                    <p class="font-bold text-emerald-600 mb-1"><i class="fas fa-check-circle"></i> ¡Imagen Generada!</p>
+                    <p>Ya hemos puesto una imagen por defecto para tus redes sociales, pero puedes usar esta si prefieres personalizarla.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección 1: Filosofía y Macros -->
+        <section id="philosophy" class="grid md:grid-cols-2 gap-8 items-center bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
+            <div class="space-y-6">
+                <h2 class="text-2xl font-bold text-gray-800">La Ciencia de los Macronutrientes</h2>
+                <div class="chart-container">
+                    <canvas id="macrosChart"></canvas>
+                </div>
+            </div>
+            <div class="bg-gray-50 rounded-xl p-8">
+                <h3 class="font-bold mb-4">✨ Optimización Inteligente</h3>
+                <p class="text-sm text-gray-600 mb-4">Nuestro algoritmo garantiza que estas 250 recetas mantengan tu cuerpo en cetosis constante.</p>
+                <ul class="space-y-2 text-sm text-gray-700">
+                    <li><i class="fas fa-check text-emerald-500 mr-2"></i> 70% Grasas Saludables</li>
+                    <li><i class="fas fa-check text-emerald-500 mr-2"></i> 25% Proteína de Alta Calidad</li>
+                    <li><i class="fas fa-check text-emerald-500 mr-2"></i> 5% Carbohidratos Netos</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Sección 2: Generador de Recetas IA -->
+        <section id="ai-generator" class="ai-gradient rounded-3xl p-8 text-white shadow-xl">
+            <div class="max-w-4xl mx-auto text-center space-y-6">
+                <h2 class="text-3xl font-bold italic">✨ Chef IA Personalizado</h2>
+                <p class="text-emerald-50 text-lg">Dime qué tienes en tu refrigerador y crearé una receta Keto para ti.</p>
+                <div class="flex flex-col md:flex-row gap-4">
+                    <input type="text" id="ingredients-input" placeholder="Ej: Huevo, aguacate, queso..." class="flex-grow p-4 rounded-xl text-gray-800 focus:outline-none shadow-inner">
+                    <button onclick="generateRecipe()" id="gen-btn" class="bg-white text-emerald-600 font-bold px-8 py-4 rounded-xl hover:bg-emerald-50 transition-all shadow-lg flex items-center justify-center gap-2">
+                        Cocinar con IA ✨
+                    </button>
+                </div>
+                <div id="ai-response-container" class="hidden mt-8 bg-white/10 backdrop-blur-md rounded-2xl p-6 text-left border border-white/20">
+                    <div id="ai-loader" class="hidden space-y-4">
+                        <div class="h-6 loading-shimmer rounded w-3/4"></div>
+                        <div class="h-4 loading-shimmer rounded w-full"></div>
+                    </div>
+                    <div id="ai-content" class="prose prose-invert max-w-none text-emerald-50 whitespace-pre-line"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección 3: Explorador de Recetas -->
+        <section id="explorer" class="bg-white rounded-3xl p-8 shadow-sm border border-gray-100">
+            <h2 class="text-2xl font-bold mb-6">Muestra del Recetario (250 Recetas)</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="recipeGrid"></div>
+        </section>
+
+        <!-- Sección 4: Proyección de Resultados -->
+        <section id="projection" class="bg-gray-900 rounded-3xl p-8 text-white">
+            <div class="grid lg:grid-cols-3 gap-8 items-center">
+                <div class="space-y-4">
+                    <h2 class="text-2xl font-bold">Simulador de Metas</h2>
+                    <p class="text-gray-400 text-sm">Ajusta tu peso actual para ver tu transformación en 30 días con nuestro método.</p>
+                    <input type="range" id="startWeight" min="50" max="150" value="85" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-emerald-500">
+                    <div class="flex justify-between text-lg font-bold">
+                        <span id="weightVal">85kg</span>
+                        <span class="text-emerald-400" id="projectedLoss">-6.8 kg</span>
+                    </div>
+                </div>
+                <div class="lg:col-span-2 bg-white rounded-xl p-4">
+                    <div class="h-[250px]">
+                        <canvas id="projectionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-white border-t border-gray-100 py-12 text-center">
+        <button onclick="window.open('https://go.hotmart.com/O104035291V', '_blank')" class="bg-emerald-600 text-white px-10 py-4 rounded-full font-bold text-xl shadow-xl hover:scale-105 transition-all">
+            Obtener Todas las Recetas (50% DTO)
+        </button>
+        <p class="mt-8 text-gray-400 text-xs">Digitalab Learning &copy; 2026 - Potenciado por Gemini AI</p>
+    </footer>
+
+    <script>
+        const apiKey = ""; 
+
+        // --- Utilidades de IA ---
+        async function fetchGemini(url, payload) {
+            let delay = 1000;
+            for (let i = 0; i < 5; i++) {
+                try {
+                    const response = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+                    if (response.ok) return await response.json();
+                } catch (e) {}
+                await new Promise(r => setTimeout(r, delay));
+                delay *= 2;
+            }
+            throw new Error('Error en la conexión con el servidor de IA.');
+        }
+
+        async function generateAdImage() {
+            const container = document.getElementById('ad-image-container');
+            const loader = document.getElementById('image-loader');
+            const img = document.getElementById('generated-ad');
+            const hint = document.getElementById('download-hint');
+            const status = document.getElementById('tts-status');
+
+            try {
+                container.classList.remove('hidden');
+                loader.classList.remove('hidden');
+                img.classList.add('hidden');
+                hint.classList.add('hidden');
+                status.classList.remove('hidden');
+                status.innerText = "Diseñando banner publicitario...";
+
+                const prompt = "A vibrant, professional high-end advertising banner for a Keto diet book. Top-down view of a gourmet salmon and avocado salad, bright natural lighting, fresh herbs, minimalist professional background, social media friendly, extremely appetizing.";
+                
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${apiKey}`;
+                const payload = { instances: [{ prompt }], parameters: { sampleCount: 1 } };
+
+                const result = await fetchGemini(url, payload);
+                const imageUrl = `data:image/png;base64,${result.predictions[0].bytesBase64Encoded}`;
+                
+                img.src = imageUrl;
+                img.classList.remove('hidden');
+                loader.classList.add('hidden');
+                hint.classList.remove('hidden');
+                status.innerText = "¡Banner listo!";
+            } catch (error) {
+                console.error(error);
+                status.innerText = "Error al generar imagen.";
+            } finally {
+                setTimeout(() => status.classList.add('hidden'), 3000);
+            }
+        }
+
+        async function playVoiceIntro() {
+            const btn = document.getElementById('tts-btn');
+            const status = document.getElementById('tts-status');
+            try {
+                btn.disabled = true;
+                status.classList.remove('hidden');
+                status.innerText = "Sintetizando voz...";
+                const text = "Say excitedly: ¡Bienvenido a tu nueva vida! Con el libro 250 Keto Friendly Delights, descubrirás que perder peso puede ser delicioso. Nuestra IA te guiará paso a paso hacia el cuerpo que deseas. ¡Vamos allá!";
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts:generateContent?key=${apiKey}`;
+                const payload = {
+                    contents: [{ parts: [{ text }] }],
+                    generationConfig: {
+                        responseModalities: ["AUDIO"],
+                        speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: "Kore" } } }
+                    },
+                    model: "gemini-2.5-flash-preview-tts"
+                };
+                const result = await fetchGemini(url, payload);
+                playPCM(result.candidates[0].content.parts[0].inlineData.data);
+            } catch (e) { status.innerText = "Error de voz."; }
+            finally { btn.disabled = false; status.classList.add('hidden'); }
+        }
+
+        async function generateRecipe() {
+            const input = document.getElementById('ingredients-input');
+            if (!input.value) return;
+            const container = document.getElementById('ai-response-container');
+            const loader = document.getElementById('ai-loader');
+            const content = document.getElementById('ai-content');
+            const btn = document.getElementById('gen-btn');
+            try {
+                btn.disabled = true;
+                container.classList.remove('hidden');
+                loader.classList.remove('hidden');
+                content.innerText = '';
+                const prompt = `Actúa como un Chef Keto. Crea una receta con estos ingredientes: ${input.value}. Incluye nombre, macros y pasos. En español.`;
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+                const result = await fetchGemini(url, { contents: [{ parts: [{ text: prompt }] }] });
+                loader.classList.add('hidden');
+                content.innerText = result.candidates[0].content.parts[0].text;
+            } catch (e) { content.innerText = "No pude generar la receta ahora."; }
+            finally { btn.disabled = false; }
+        }
+
+        function playPCM(base64) {
+            const binary = atob(base64);
+            const array = new Uint8Array(binary.length);
+            for(let i=0; i<binary.length; i++) array[i] = binary.charCodeAt(i);
+            const wavHeader = new ArrayBuffer(44);
+            const view = new DataView(wavHeader);
+            view.setUint32(0, 0x52494646, false); 
+            view.setUint32(4, 36 + array.length, true);
+            view.setUint32(8, 0x57415645, false);
+            view.setUint32(12, 0x666d7420, false);
+            view.setUint32(16, 16, true);
+            view.setUint16(20, 1, true);
+            view.setUint16(22, 1, true);
+            view.setUint32(24, 24000, true);
+            view.setUint32(28, 48000, true);
+            view.setUint16(32, 2, true);
+            view.setUint16(34, 16, true);
+            view.setUint32(36, 0x64617461, false);
+            view.setUint32(40, array.length, true);
+            const blob = new Blob([wavHeader, array], { type: 'audio/wav' });
+            new Audio(URL.createObjectURL(blob)).play();
+        }
+
+        // --- Gráficos e Interfaz ---
+        const staticRecipes = [
+            { title: "Salmón con Espárragos", icon: "fa-fish", color: "bg-blue-100 text-blue-600" },
+            { title: "Omelette de Queso", icon: "fa-egg", color: "bg-yellow-100 text-yellow-600" },
+            { title: "Aguacates Rellenos", icon: "fa-seedling", color: "bg-emerald-100 text-emerald-600" }
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const ctxM = document.getElementById('macrosChart').getContext('2d');
+            new Chart(ctxM, { type: 'doughnut', data: { labels: ['Grasas', 'Proteína', 'Carbs'], datasets: [{ data: [70, 25, 5], backgroundColor: ['#10B981', '#F59E0B', '#EF4444'] }] }, options: { maintainAspectRatio: false } });
+
+            const ctxP = document.getElementById('projectionChart').getContext('2d');
+            window.pChart = new Chart(ctxP, { type: 'line', data: { labels: ['Inic', 'S1', 'S2', 'S3', 'S4'], datasets: [{ label: 'Peso Estimado (kg)', data: [85, 83, 81.5, 80, 78.2], borderColor: '#10B981', tension: 0.4, fill: true, backgroundColor: 'rgba(16, 185, 129, 0.1)' }] }, options: { maintainAspectRatio: false } });
+
+            const grid = document.getElementById('recipeGrid');
+            staticRecipes.forEach(r => {
+                const div = document.createElement('div');
+                div.className = 'bg-gray-50 p-6 rounded-2xl flex items-center gap-4 hover:shadow-md transition-shadow';
+                div.innerHTML = `<div class="p-4 rounded-full ${r.color}"><i class="fas ${r.icon}"></i></div><h3 class="font-bold">${r.title}</h3>`;
+                grid.appendChild(div);
+            });
+
+            document.getElementById('startWeight').addEventListener('input', (e) => {
+                const w = parseFloat(e.target.value);
+                document.getElementById('weightVal').innerText = w + 'kg';
+                const loss = (w * 0.08).toFixed(1);
+                document.getElementById('projectedLoss').innerText = '-' + loss + ' kg';
+                window.pChart.data.datasets[0].data = [w, w-(loss*0.25), w-(loss*0.5), w-(loss*0.75), w-loss];
+                window.pChart.update();
+            });
+        });
+
+        function scrollToSection(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); }
+    </script>
+</body>
+</html>
