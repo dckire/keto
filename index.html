@@ -87,7 +87,7 @@
     <!-- Contenido Principal -->
     <main class="max-w-6xl mx-auto px-4 py-8 space-y-12">
 
-        <!-- Sección Hero con IA -->
+        <!-- Sección Hero -->
         <section class="text-center space-y-6 py-10 bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
             <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">Digitalab Learning Presenta</span>
             <h1 class="text-4xl md:text-5xl font-bold text-gray-900 leading-tight">
@@ -102,21 +102,8 @@
                     <button id="tts-btn" onclick="playVoiceIntro()" class="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 px-4 py-2 rounded-full text-sm font-semibold transition-all">
                         <i class="fas fa-volume-up text-emerald-600"></i> Escuchar Introducción ✨
                     </button>
-                    <button onclick="generateAdImage()" class="flex items-center gap-2 bg-blue-50 hover:bg-blue-100 px-4 py-2 rounded-full text-sm font-semibold text-blue-600 transition-all">
-                        <i class="fas fa-image"></i> Generar Banner Personalizado ✨
-                    </button>
                 </div>
                 <div id="tts-status" class="text-xs text-gray-400 hidden italic">Procesando con IA...</div>
-            </div>
-            
-            <!-- Contenedor para la imagen generada por IA -->
-            <div id="ad-image-container" class="hidden mt-6 max-w-xl mx-auto border-4 border-dashed border-gray-200 rounded-2xl p-2 bg-gray-50">
-                <div id="image-loader" class="hidden h-64 loading-shimmer rounded-xl flex items-center justify-center text-gray-400">Diseñando banner publicitario...</div>
-                <img id="generated-ad" src="" alt="[Banner Publicitario Keto]" class="hidden w-full rounded-xl shadow-lg">
-                <div id="download-hint" class="hidden mt-4 p-3 bg-white rounded-lg text-xs text-gray-500 border border-gray-100 text-center">
-                    <p class="font-bold text-emerald-600 mb-1"><i class="fas fa-check-circle"></i> ¡Imagen Generada!</p>
-                    <p>Ya hemos puesto una imagen por defecto para tus redes sociales, pero puedes usar esta si prefieres personalizarla.</p>
-                </div>
             </div>
         </section>
 
@@ -214,42 +201,6 @@
                 delay *= 2;
             }
             throw new Error('Error en la conexión con el servidor de IA.');
-        }
-
-        async function generateAdImage() {
-            const container = document.getElementById('ad-image-container');
-            const loader = document.getElementById('image-loader');
-            const img = document.getElementById('generated-ad');
-            const hint = document.getElementById('download-hint');
-            const status = document.getElementById('tts-status');
-
-            try {
-                container.classList.remove('hidden');
-                loader.classList.remove('hidden');
-                img.classList.add('hidden');
-                hint.classList.add('hidden');
-                status.classList.remove('hidden');
-                status.innerText = "Diseñando banner publicitario...";
-
-                const prompt = "A vibrant, professional high-end advertising banner for a Keto diet book. Top-down view of a gourmet salmon and avocado salad, bright natural lighting, fresh herbs, minimalist professional background, social media friendly, extremely appetizing.";
-                
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${apiKey}`;
-                const payload = { instances: [{ prompt }], parameters: { sampleCount: 1 } };
-
-                const result = await fetchGemini(url, payload);
-                const imageUrl = `data:image/png;base64,${result.predictions[0].bytesBase64Encoded}`;
-                
-                img.src = imageUrl;
-                img.classList.remove('hidden');
-                loader.classList.add('hidden');
-                hint.classList.remove('hidden');
-                status.innerText = "¡Banner listo!";
-            } catch (error) {
-                console.error(error);
-                status.innerText = "Error al generar imagen.";
-            } finally {
-                setTimeout(() => status.classList.add('hidden'), 3000);
-            }
         }
 
         async function playVoiceIntro() {
